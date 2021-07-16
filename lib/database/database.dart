@@ -50,7 +50,11 @@ class DBHelper {
       version: 1,
     ); 
     var result = await database.rawQuery(rawQuery);
-    return result;  
+    // print('RESULT $result');
+    if (result != []) {
+      return result;  
+    }
+    return [{'email': '-', 'loggedInAt': '-'}];  
   }
 
 }

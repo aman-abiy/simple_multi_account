@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:multi_account/controller/current_user_controller.dart';
 import 'package:multi_account/screens/login.dart';
 import 'package:multi_account/utils/shared_prefs.dart';
+import 'package:provider/provider.dart';
 
 class AppDrawer extends StatefulWidget {
   AppDrawer();
@@ -57,6 +59,8 @@ class _AppDrawerState extends State<AppDrawer> {
                               onPressed: () {
                                 MySharedPreference().setCurrentUser(snapshot.data![index]);
                                 Navigator.pop(context);
+                                Provider.of<CurrentUserController>(context, listen: false).setCurrentUser(snapshot.data![index]);
+                                // Navigator.of(context).push(MaterialPageRoute(builder: (context) => super.widget));
                               }
                             ),
                           ],

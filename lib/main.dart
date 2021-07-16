@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:multi_account/database/database.dart';
 import 'package:multi_account/screens/home.dart';
 import 'package:multi_account/utils/shared_prefs.dart';
+import 'package:provider/provider.dart';
+
+import 'controller/current_user_controller.dart';
 
 void main() async {
   
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider (
+    create: (context) => CurrentUserController(),
+    child: MyApp()));
+
   MySharedPreference mySharedPreference = MySharedPreference();
-  mySharedPreference.setCurrentUser('amexabiy@gmail.com');
-  mySharedPreference.addUserToList('amexabiy@gmail.com');
   print('users -=> ${await mySharedPreference.getAllUser()} - ${await mySharedPreference.getCurrentUser()}');
+  
   await DBHelper().openDB();
 }
 
