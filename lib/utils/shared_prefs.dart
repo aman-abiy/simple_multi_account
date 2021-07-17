@@ -31,4 +31,17 @@ class MySharedPreference {
     SharedPreferences sharedPref = await SharedPreferences.getInstance();
     return sharedPref.getStringList('users_list') ?? [];
   }
+
+  // on logout
+  Future<void> switchCurrentUser(String email) async {
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    usersList = sharedPref.getStringList('users_list') ?? [];
+    usersList.remove(email);
+    sharedPref.setStringList('users_list', usersList);
+    if (usersList.length != 0) {
+      setCurrentUser(usersList[usersList.length - 1]);
+      return;
+    }
+    setCurrentUser('');
+  }
 }

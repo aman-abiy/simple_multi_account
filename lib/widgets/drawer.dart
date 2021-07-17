@@ -14,6 +14,7 @@ class AppDrawer extends StatefulWidget {
   
 
 class _AppDrawerState extends State<AppDrawer> {
+  MySharedPreference mySharedPreference = MySharedPreference();
   List<Widget> users = [];
 
   @override
@@ -49,21 +50,18 @@ class _AppDrawerState extends State<AppDrawer> {
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        return Row(
-                          children: [
-                            Icon(Icons.account_box_outlined),
-                            FlatButton(
-                              child: Text(snapshot.data![index],
-                              style: TextStyle(fontSize: 20, color: Colors.amber.shade900),
-                              ),
-                              onPressed: () {
-                                MySharedPreference().setCurrentUser(snapshot.data![index]);
-                                Navigator.pop(context);
-                                Provider.of<CurrentUserController>(context, listen: false).setCurrentUser(snapshot.data![index]);
-                                // Navigator.of(context).push(MaterialPageRoute(builder: (context) => super.widget));
-                              }
+                        return GestureDetector(
+                          onTap: () {
+                            MySharedPreference().setCurrentUser(snapshot.data![index]);
+                            Navigator.pop(context);
+                            Provider.of<CurrentUserController>(context, listen: false).setCurrentUser(snapshot.data![index]);
+                          },
+                          child: ListTile(
+                            leading: Icon(Icons.account_box_outlined),
+                            title: Text(snapshot.data![index],
+                              style: TextStyle(fontSize: 20, color: snapshot.data![index] == Provider.of<CurrentUserController>(context, listen: false).currentUser ? Colors.amber.shade900 : Colors.grey),
                             ),
-                          ],
+                          ),
                         );
                       }),
                   );
@@ -89,8 +87,13 @@ class _AppDrawerState extends State<AppDrawer> {
               ),
               FlatButton(
                 child: Text('Logout'),
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginPage()));
+                onPressed: () async {
+                  String currUserBefore = await mySharedPreference.getCurrentUser();
+                  mySharedPreference.switchCurrentUser(currUserBefore);
+                  // current user is different now (has switched)
+                  String currUserAfter = await mySharedPreference.getCurrentUser();
+                  Provider.of<CurrentUserController>(context, listen: false).currentUser = currUserAfter;
+                  Navigator.pop(context);
                 }, 
               )
              ]

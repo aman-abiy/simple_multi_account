@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:multi_account/controller/current_user_controller.dart';
 import 'package:multi_account/database/database.dart';
 import 'package:multi_account/model/user.dart';
 import 'package:multi_account/utils/shared_prefs.dart';
 import 'package:multi_account/widgets/drawer.dart';
+import 'package:provider/provider.dart';
 
 import 'home.dart';
 
@@ -63,6 +65,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   await DBHelper().openDB(),
                   await DBHelper().addUserData(user.toMap()),
+                  Provider.of<CurrentUserController>(context, listen: false).currentUser = email,
+                  Provider.of<CurrentUserController>(context, listen: false).checkForInfo = true,
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()))
                 }
               ),
